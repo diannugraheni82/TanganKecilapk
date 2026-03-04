@@ -17,7 +17,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF000080)),
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: const LandingPage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LandingPage(),
+        '/menu': (context) => const MenuPage(),
+      },
     );
   }
 }
@@ -33,31 +37,32 @@ class LandingPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/logo.png', width: 150, height: 150
-            ),
+            Image.asset('assets/logo.png', width: 150, height: 150),
             const SizedBox(height: 20),
-            const Text("TanganKecil", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white,)),
+            const Text("TanganKecil",
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white,
+                )),
             const SizedBox(height: 10),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: Text("Temukan berbagai produk handmade unik dan menarik untuk anda", textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white70))),
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                child: 
+                  Text("Temukan berbagai produk handmade unik dan menarik untuk anda", textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white70))),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MenuPage()),
-                );
+                Navigator.pushNamed(context, '/menu');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.yellow[700],
                 foregroundColor: const Color(0xFF000080),
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text("Lihat Katalog", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              child: const Text("Lihat Katalog",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             ),
           ],
         ),
@@ -66,8 +71,46 @@ class LandingPage extends StatelessWidget {
   }
 }
 
-class MenuPage extends StatelessWidget {
+class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
+
+  @override
+  State<MenuPage> createState() => _MenuPageState();
+}
+
+class _MenuPageState extends State<MenuPage> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    const KatalogView(),
+    const SearchView(),
+    const ProfilePage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        selectedItemColor: const Color(0xFF000080),
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Setting'),
+        ],
+      ),
+    );
+  }
+}
+
+class KatalogView extends StatelessWidget {
+  const KatalogView({super.key});
 
   void _tampilkanFormPesanan(BuildContext context, String namaProduk) {
     final TextEditingController controllerPesanan = TextEditingController();
@@ -106,7 +149,7 @@ class MenuPage extends StatelessWidget {
                 autofocus: true,
                 maxLines: 3,
                 decoration: InputDecoration(
-                  hintText: "Tulis detail pesanan (warna, ukuran, jumlah)...",
+                  hintText: "Tulis detail pesanan (warna, ukuran, jumlah)",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -187,22 +230,15 @@ class MenuPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Katalog TanganKecil", style: TextStyle(color: Colors.white)),
+        title: const Text("Katalog TanganKecil",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF000080),
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.white),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Center(
-              child: Text("Temukan produk favoritmu!",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF000080)),
-              ),
-            ),
-          ),
+          const SizedBox(height: 10),
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -218,7 +254,8 @@ class MenuPage extends StatelessWidget {
                 return Card(
                   elevation: 4,
                   clipBehavior: Clip.antiAlias,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -226,13 +263,15 @@ class MenuPage extends StatelessWidget {
                         children: [
                           AspectRatio(
                             aspectRatio: 1 / 1,
-                            child: Image.network(produk['img']!, fit: BoxFit.cover),
+                            child: Image.network(produk['img']!,
+                                fit: BoxFit.cover),
                           ),
                           const Align(
                             alignment: Alignment.topLeft,
                             child: Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.bookmark, color: Colors.orange, size: 24),
+                              child: Icon(Icons.bookmark,
+                                  color: Colors.orange, size: 24),
                             ),
                           ),
                         ],
@@ -243,25 +282,19 @@ class MenuPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(produk['nama']!,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              Text(
+                                produk['nama']!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Text("Rp ${produk['harga']}", style: const TextStyle(color: Color(0xFF000080), fontWeight: FontWeight.bold, fontSize: 12)),
-                                  ),
-                                ],
-                              ),
+                              Text("Rp ${produk['harga']}",
+                                  style: const TextStyle(color: Color(0xFF000080), fontWeight: FontWeight.bold,fontSize: 12)),
                               const SizedBox(height: 6),
-                              Text(produk['deskripsi']!, style: TextStyle(fontSize: 11, color: Colors.grey[700]), maxLines: 2, overflow: TextOverflow.ellipsis),
+                              Text(produk['deskripsi']!,
+                                  style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis),
                               const Spacer(),
                               SizedBox(
                                 width: double.infinity,
@@ -272,8 +305,10 @@ class MenuPage extends StatelessWidget {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF000080),
                                     foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
                                   ),
                                 ),
                               ),
@@ -287,9 +322,131 @@ class MenuPage extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: 10),
         ],
       ),
+    );
+  }
+}
+
+class SearchView extends StatefulWidget {
+  const SearchView({super.key});
+
+  @override
+  _SearchViewState createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> {
+  final TextEditingController _searchController = TextEditingController();
+
+  List<String> recentSearches = [
+    "Gelang Manik Aesthetic",
+    "Boneka Rajut Custom",
+    "Tas Rajut Selempang",
+    "Gantungan Kunci Lucu",
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: const InputDecoration(
+                        hintText: 'Cari produk handmade...',
+                        hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                        prefixIcon:
+                            Icon(Icons.search, color: Colors.grey, size: 20),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.separated(
+              itemCount: recentSearches.length,
+              separatorBuilder: (context, index) =>
+                  const Divider(height: 1, indent: 15),
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    recentSearches[index],
+                    style: const TextStyle(fontSize: 14, color: Colors.black),
+                  ),
+                  trailing:
+                      const Icon(Icons.north_west, size: 16, color: Colors.grey),
+                  onTap: () {
+                    _searchController.text = recentSearches[index];
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 30),
+            const CircleAvatar(
+              radius: 50,
+              backgroundColor: Color(0xFF000080),
+              child: Icon(Icons.person, size: 50, color: Colors.white),
+            ),
+            const SizedBox(height: 10),
+            const Text("User TanganKecil",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text("Logout", style: TextStyle(color: Colors.red)),
+              onTap: () {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (route) => false);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuTile(IconData icon, String title) {
+    return ListTile(
+      leading: Icon(icon, color: const Color(0xFF000080)),
+      title: Text(title),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () {},
     );
   }
 }
